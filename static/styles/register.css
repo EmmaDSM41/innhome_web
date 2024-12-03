@@ -1,0 +1,156 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+}
+
+/* Login Container */
+.login-container {
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 800px; /* Tamaño fijo del contenedor */
+    max-width: 90%; /* Para dispositivos pequeños */
+    height: 500px; /* Altura fija para acomodar las alertas */
+}
+
+/* Image Section */
+.image-section {
+    flex: 1; /* 50% del contenedor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e9ecef; /* Fondo gris claro */
+    padding: 10px;
+}
+
+.login-image {
+    width: 90%; /* Reducir el tamaño de la imagen dentro del espacio */
+    height: auto;
+    max-height: 90%; /* Asegurar que no sobresalga */
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* Form Section */
+.form-section {
+    flex: 1; /* 50% del contenedor */
+    padding: 40px 30px; /* Espaciado adecuado */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Form Title */
+h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #007bff;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 1.2rem; /* Espaciado entre campos */
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Button */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+/* Link */
+.link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 14px;
+    color: #666;
+}
+
+.link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
+
+/* Alert Styles */
+.alert-list {
+    list-style: none;
+    margin-bottom: 1rem;
+    padding: 0;
+}
+
+.alert {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}

@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - InnHome</title>
+    <link rel="stylesheet" href="{% static 'styles/nosotros.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container-navbar">
+        <nav class="navbar container">
+            <div class="container-logo">
+                <a href="{% url 'home' %}">
+                    <img src="/media/imagenes/logito.png" alt="Logo de la Empresa" class="logo">
+                </a>                    
+            </div>
+            <i class="fa-solid fa-bars"></i>
+            <ul class="menu">
+                <li><a href="{% url 'home' %}">Inicio</a></li>
+                <li><a href="{% url 'sobre_nosotros' %}">Sobre Nosotros</a></li>
+                <li><a href="{% url 'listar_propiedades' %}">Propiedades</a></li>
+                <li><a href="{% url 'contactar' %}">Contacto</a></li>
+                <a href="{% url 'ver_favoritos' %}" class="nav-link">
+                    <i class="fas fa-heart"></i> 
+                    <span class="badge badge-pill badge-danger">{{ favoritos_count }}</span>
+                </a>
+                <div class="menu-container">
+                    <div class="menu-content">
+                       {% if user.is_authenticated %}
+                       <a href="{% url 'logout' %}" class="logout-link">
+                           <i class="fas fa-sign-out-alt"></i>
+                       </a>
+                       {% else %}
+                           <a href="{% url 'login' %}">Iniciar sesión</a>
+                           <a href="{% url 'registro' %}">Registrarse</a>
+                       {% endif %}
+                   </div>
+               </div>
+            </ul>
+        </nav>
+    </div>
+    <section>
+        {% include "chat.html" %}
+
+     </section>
+
+    <div class="hero">
+        <div class="hero-image">
+            <img src="/media/imagenes/interior3.jpg" alt="Imagen de la oficina">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Descubre InnHome</h1>
+            <p>Tu socio de confianza en el mercado inmobiliario</p>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <section class="about-section">
+            <div class="container">
+                <div class="mission-vision">
+                    <div class="mission">
+                        <i class="fas fa-home"></i>
+                        <h2>Nuestra Misión</h2>
+                        <p>Facilitar el proceso de encontrar el hogar perfecto para cada familia, brindando un servicio personalizado y profesional que supere las expectativas de nuestros clientes.</p>
+                    </div>
+                    <div class="vision">
+                        <i class="fas fa-chart-line"></i>
+                        <h2>Nuestra Visión</h2>
+                        <p>Ser la inmobiliaria líder en innovación y satisfacción del cliente, transformando la manera en que las personas encuentran y adquieren sus propiedades ideales.</p>
+                    </div>
+                </div>
+
+                <div class="values-section">
+                    <h2>Nuestros Valores</h2>
+                    <div class="values-grid">
+                        <div class="value-item">
+                            <i class="fas fa-handshake"></i>
+                            <h3>Integridad</h3>
+                            <p>Actuamos con honestidad y transparencia en cada transacción.</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-star"></i>
+                            <h3>Excelencia</h3>
+                            <p>Buscamos la perfección en cada detalle de nuestro servicio.</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-users"></i>
+                            <h3>Compromiso</h3>
+                            <p>Dedicación total a las necesidades de nuestros clientes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <h2>¿Listo para encontrar tu hogar ideal?</h2>
+                <p>Nuestro equipo de expertos está aquí para ayudarte en cada paso del camino</p>
+                <a href="{% url 'contactar' %}" class="cta-button">Contáctanos ahora</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

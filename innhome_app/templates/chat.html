@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot de Recomendaciones</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            background-color: #f4f7fc;
+        }
+
+        /* Avatar (GIF del chatbot) a la derecha - Hacerlo más grande */
+        #chat-avatar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;  /* Tamaño aumentado */
+            height: 200px; /* Tamaño aumentado */
+            background: url('/media/img/anime.gif') no-repeat center center;
+            background-size: cover;
+            cursor: pointer;
+            z-index: 9999;
+            border-radius: 50%;
+        }
+
+        /* Estilo del mensaje al lado del GIF (mensaje de bienvenida) */
+        #message-side {
+            position: fixed;
+            bottom: 100px; /* Ajustado para estar al lado del GIF */
+            right: 230px; /* Ajustado para alinearse con el GIF */
+            background-color: #0511f7;
+            color: #ffffff;
+            padding: 11px 19px; /* Reducido padding */
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(27, 7, 247, 0.1);
+            z-index: 9998;
+            font-size: 13px; /* Reducido el tamaño del texto */
+            display: block; /* Siempre visible */
+            width: 200px; /* Ajustar ancho */
+        }
+
+        /* Estilo del chat flotante */
+        #chat-box {
+            display: none; /* Inicialmente oculto */
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo del encabezado del chat */
+        #chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Estilo de los mensajes */
+        #messages {
+            padding: 10px;
+            height: 250px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+            flex-grow: 1;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para el mensaje del bot */
+        .bot-message {
+            background-color: #e1f5fe;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            max-width: 75%;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            align-self: flex-start;
+            word-wrap: break-word;
+        }
+
+        /* Estilos para el mensaje del usuario */
+        .user-message {
+            background-color: #007bff;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            max-width: 75%;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            align-self: flex-end;
+            word-wrap: break-word;
+        }
+
+        /* Estilo del área de entrada de texto */
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            border-radius: 0 0 0 10px;
+        }
+
+        /* Estilo del botón de enviar */
+        #send-message {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Estilos para el botón de cerrar */
+        #close-chat-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Agregar un espacio adicional para el mensaje inicial */
+        #messages .initial-message {
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            color: #333;
+            align-self: flex-start;
+            max-width: 75%;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Avatar flotante del chatbot -->
+<div id="chat-avatar" onclick="toggleChat()"></div>
+
+<!-- Mensaje que aparece a la izquierda del avatar -->
+<div id="message-side">
+    ¿En qué puedo ayudarte?
+</div>
+
+<!-- Estructura del chat flotante -->
+<div id="chat-box">
+    <div id="chat-header">
+        <span>Chatbot</span>
+        <button id="close-chat-btn" onclick="toggleChat()">X</button>
+    </div>
+    <div id="messages"></div>  <!-- Aquí se mostrarán los mensajes del chat -->
+    <div style="display: flex; padding: 10px; background-color: white;">
+        <input type="text" id="user_message" placeholder="Escribe tu mensaje..." />
+        <button id="send-message">Enviar</button>
+    </div>
+</div>
+
+<script>
+    // Función para abrir y cerrar el chat
+    function toggleChat() {
+        const chatBox = document.getElementById('chat-box');
+        const messageSide = document.getElementById('message-side');
+        
+        // Alternar visibilidad del chat
+        if (chatBox.style.display === 'none' || chatBox.style.display === '') {
+            chatBox.style.display = 'flex';
+            messageSide.style.display = 'none';  // El mensaje se oculta cuando el chat está abierto
+        } else {
+            chatBox.style.display = 'none';
+            messageSide.style.display = 'block';  // El mensaje se muestra cuando el chat está cerrado
+        }
+    }
+
+    // Enviar el mensaje al backend
+    async function sendMessage(userMessage) {
+        const csrfToken = document.querySelector('[name="csrf-token"]').getAttribute('content');
+
+        try {
+            const response = await fetch('/get_recommendations/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `user_message=${encodeURIComponent(userMessage)}`
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                displayMessage(data.response, 'bot');
+            } else {
+                console.error('Error en la solicitud:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+        }
+    }
+
+    // Función para mostrar los mensajes en el chat
+    function displayMessage(message, sender) {
+        const messagesDiv = document.getElementById('messages');
+        const messageContainer = document.createElement('div');
+        
+        messageContainer.classList.add('message-container');
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
+        
+        if (sender === 'bot') {
+            // Si es un mensaje del bot, insertar como HTML
+            messageDiv.innerHTML = message; // Interpretar como HTML
+        } else {
+            // Si es un mensaje del usuario, insertar como texto
+            messageDiv.textContent = message;
+        }
+        
+        messageContainer.appendChild(messageDiv);
+        messagesDiv.appendChild(messageContainer);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Hacer scroll automático hacia abajo
+    }
+
+    // Función para mostrar el mensaje inicial
+    function showInitialMessage() {
+        const initialMessage = '¿En qué puedo ayudarte?';
+        displayMessage(initialMessage, 'bot');
+    }
+
+    // Mostrar el mensaje inicial cuando se carga la página
+    window.onload = function() {
+        showInitialMessage();
+        // Asegurarse de que el chat está cerrado al cargar la página
+        document.getElementById('chat-box').style.display = 'none';
+    };
+
+    // Configurar el evento para el envío de mensaje
+    document.getElementById('send-message').addEventListener('click', function() {
+        const userMessage = document.getElementById('user_message').value;
+        if (userMessage) {
+            displayMessage(userMessage, 'user');
+            sendMessage(userMessage);
+            document.getElementById('user_message').value = ''; // Limpiar el campo
+        }
+    });
+
+    // Permitir enviar el mensaje presionando Enter
+    document.getElementById('user_message').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('send-message').click();
+        }
+    });
+</script>
+
+</body>
+</html>

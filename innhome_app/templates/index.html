@@ -1,0 +1,383 @@
+{% load static %}  
+{% csrf_token %} 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Innhome</title>
+    <link rel="stylesheet" href="{% static 'styles/principal.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+    <header>
+       <!--  <div class="container-hero">
+            <div class="container hero">
+                <div class="customer-support">
+                    <i class="fa-solid fa-headset"></i>
+                    <div class="content-customer-support">
+                        <span class="text">Soporte al cliente</span>
+                        <span class="number">123-456-7890</span>
+                    </div>
+                </div>
+
+                <div class="container-logo">
+                    <i class="fa-solid fa-mug-hot"></i>
+                    <h1 class="logo"><a href="/">InnHome</a></h1>
+                </div>
+            </div> -->
+        </div>
+        </div>
+
+        <div class="container-navbar">
+            <nav class="navbar container">
+                <div class="container-logo">
+                    <a href="{% url 'home' %}">
+                        <img src="/media/imagenes/logito.png" alt="Logo de la Empresa" class="logo">
+                    </a>                    
+                </div>
+                <i class="fa-solid fa-bars"></i>
+                <ul class="menu">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'sobre_nosotros' %}">Sobre Nosotros</a></li>
+                    <li><a href="{% url 'listar_propiedades' %}">Propiedades</a></li>
+                    <li><a href="{% url 'contactar' %}">Contacto</a></li>
+                    <a href="{% url 'ver_favoritos' %}" class="nav-link">
+                        <i class="fas fa-heart"></i> 
+                        <span class="badge badge-pill badge-danger">{{ favoritos_count }}</span>
+                    </a>
+                    <div class="menu-container">
+                        <div class="menu-content">
+                           {% if user.is_authenticated %}
+                           <a href="{% url 'logout' %}" class="logout-link">
+                               <i class="fas fa-sign-out-alt"></i>
+                           </a>
+                           {% else %}
+                               <a href="{% url 'login' %}">Iniciar sesión</a>
+                               <a href="{% url 'registro' %}">Registrarse</a>
+                           {% endif %}
+                       </div>
+                   </div>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="banner">
+        <div class="content-banner">
+            <p>InnHome</p>
+            <h2>Encuentra<br />La casa de tus sueños</h2>
+            <a href="{% url 'listar_propiedades' %}">Encuentra tu casa ahora</a>
+        </div>
+    </section>
+    <section>
+        {% include "chat.html" %}
+
+     </section>
+
+    <main class="main-content">
+        <section class="container container-features">
+            <div class="card-feature">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <div class="feature-content">
+                    <span>Navega sin compromiso</span>
+                </div>
+            </div>
+            <div class="card-feature">
+                <i class="fa-solid fa-address-card"></i>
+                <div class="feature-content">
+                    <span>Contacto de manera facil y rapida</span>
+                </div>
+            </div>
+            <div class="card-feature">
+                <i class="fa-solid fa-house"></i>
+                <div class="feature-content">
+                    <span>Gran variedad de viviendas</span>
+                </div>
+            </div>
+            <div class="card-feature">
+                <i class="fa-solid fa-headset"></i>
+                <div class="feature-content">
+                    <span>Servicio al cliente 24/7</span>
+                </div>
+            </div>
+        </section>
+
+       <!--  <section class="container top-categories">
+            <h1 class="heading-1">Mejores Categorías</h1>
+            <div class="container-categories">
+                <div class="card-category category-moca">
+                    <p>Casas</p>
+                    <span>Ver más</span>
+                </div>
+                <div class="card-category category-expreso">
+                    <p>Departamentos</p>
+                    <span>Ver más</span>
+                </div>
+                <div class="card-category category-capuchino">
+                    <p>Alquileres</p>
+                    <span>Ver más</span>
+                </div>
+            </div>
+        </section> -->
+ 
+
+        <section class="gallery">
+            <img src="/media/imagenes_propiedades/casa2.jpg" alt="Gallery Img1" class="gallery-img-1" /><img
+                src="/media/imagenes_propiedades/interior1.jpg" alt="Gallery Img2" class="gallery-img-2" /><img
+                src="/media/imagenes_propiedades/interior3.jpg" alt="Gallery Img3" class="gallery-img-3" /><img
+                src="/media/imagenes_propiedades/casa3.jpg" alt="Gallery Img4" class="gallery-img-4" /><img
+                src="/media/imagenes_propiedades/casa2.jpg" alt="Gallery Img5" class="gallery-img-5" />
+        </section>
+
+        <section class="amenidades">
+            <h2>AMENIDADES</h2>
+            <p>Disfruta de un entorno placentero sin salir de casa</p>
+            <div class="amenities-grid">
+                <div class="amenity-item">
+                    <i class="fas fa-tree"></i> <!-- Icono de áreas verdes -->
+                    <p>Áreas Verdes</p>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-swimming-pool"></i> <!-- Icono de alberca -->
+                    <p>Alberca</p>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-sun"></i> <!-- Icono de asoleadero -->
+                    <p>Asoleadero</p>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-restroom"></i> <!-- Icono de baños -->
+                    <p>Baños</p>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-child"></i> <!-- Icono de juegos infantiles -->
+                    <p>Juegos Infantiles</p>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-building"></i> <!-- Icono de rooftop -->
+                    <p>Rooftop</p>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-users"></i> <!-- Icono de social deck -->
+                    <p>Social Deck</p>
+                </div>   
+            </div>
+        </section>
+       <!--  <center> 
+
+        <section>
+            <div class="property-card">
+                <div class="image-container">
+                    <img src="/media/imagenes_propiedades/casa2.jpg" alt="Imagen de la propiedad">
+                    <i class="fa fa-camera"></i>
+                </div>
+                <div class="property-info">
+                    <h2>Lanuza PB</h2>
+                    <div class="details">
+                        <div class="detail">
+                            <i class="fa fa-bed"></i> 2 habitaciones
+                        </div>
+                        <div class="detail">
+                            <i class="fa fa-bath"></i> 2 baños
+                        </div>
+                        <div class="detail">
+                            <i class="fa fa-ruler-combined"></i> 97.81 m²
+                        </div>
+                    </div>
+                    <p class="price">Desde $2,434,000</p>
+                    <a href="#" class="more-info-btn"><i class="fa fa-plus"></i> Ver más información</a>
+                </div>
+            </div>
+        </section>
+        </center> -->
+
+        <section>
+            <div class="container1">
+                <div class="map-container" id="map"></div>
+                <div class="contact-section">
+                 <h2>¡Estamos aquí para ayudarte!</h2>
+                 <h2>Te gustaria algun asesoramiento mas personalizado?</h2>
+                 <p>Escríbenos para obtener más información sobre nuestras propiedades.</p>
+                 <div class="contact-buttons">
+                    <a href="{% url 'contactar' %}">📞 Contactar Asesor</a>
+                 </div>
+              </div>
+        </section>
+        
+         <!-- <section class="container blogs">
+            <h1 class="heading-1">Últimos Blogs</h1>
+
+            <div class="container-blogs">
+                <div class="card-blog">
+                    <div class="container-img">
+                        <img src="/media/imagenes_propiedades/casa3.jpg" alt="Imagen Blog 1" />
+                        <div class="button-group-blog">
+                            <span>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <span>
+                                <i class="fa-solid fa-link"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="content-blog">
+                        <center>
+                            <h3>Casa</h3>
+                        </center>
+                        <p>
+                            Esta hermosa casa en venta ofrece un espacio amplio y cómodo,
+                            ideal para cualquier tipo de familia. Con varias habitaciones y baños,
+                            cuenta con un diseño funcional y acabados de calidad.
+                            La propiedad incluye una cocina moderna, una sala espaciosa y
+                            áreas comunes perfectas para disfrutar del tiempo en familia o con amigos.
+                        </p>
+                        <div class="btn-read-more">Leer más</div>
+                    </div>
+                </div>
+                <div class="card-blog">
+                    <div class="container-img">
+                        <img src="/media/imagenes_propiedades/casa3.jpg" alt="Imagen Blog 2" />
+                        <div class="button-group-blog">
+                            <span>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <span>
+                                <i class="fa-solid fa-link"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="content-blog">
+                        <center>
+                            <h3>Casa</h3>
+                        </center>
+                        <p>
+                            Esta hermosa casa en venta ofrece un espacio amplio y cómodo,
+                            ideal para cualquier tipo de familia. Con varias habitaciones y baños,
+                            cuenta con un diseño funcional y acabados de calidad.
+                            La propiedad incluye una cocina moderna, una sala espaciosa y
+                            áreas comunes perfectas para disfrutar del tiempo en familia o con amigos.
+                        </p>
+                        <div class="btn-read-more">Leer más</div>
+                    </div>
+                </div>
+                <div class="card-blog">
+                    <div class="container-img">
+                        <img src="/media/imagenes_propiedades/casa3.jpg" alt="Imagen Blog 3" />
+                        <div class="button-group-blog">
+                            <span>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <span>
+                                <i class="fa-solid fa-link"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="content-blog">
+                        <center>
+                            <h3>Casa</h3>
+                        </center>
+                        <p>
+                            Esta hermosa casa en venta ofrece un espacio amplio y cómodo,
+                            ideal para cualquier tipo de familia. Con varias habitaciones y baños,
+                            cuenta con un diseño funcional y acabados de calidad.
+                            La propiedad incluye una cocina moderna, una sala espaciosa y
+                            áreas comunes perfectas para disfrutar del tiempo en familia o con amigos.
+                        </p>
+                        <div class="btn-read-more">Leer más</div>
+                    </div>
+            </div>
+        </section> -->
+    </main>
+
+    <footer class="footer">
+        <div class="container container-footer">
+            <div class="menu-footer">
+                <div class="contact-info">
+                    <p class="title-footer">Información de Contacto</p>
+                    <ul>
+                        <li>
+                            Dirección: 71 Pennington Lane Vernon Rockville, CT
+                            06066
+                        </li>
+                        <li>Teléfono: 123-456-7890</li>
+                        <li>Fax: 55555300</li>
+                        <li>EmaiL: baristas@support.com</li>
+                    </ul>
+                    <div class="social-icons">
+                        <span class="facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </span>
+                        <span class="twitter">
+                            <i class="fa-brands fa-twitter"></i>
+                        </span>
+                        <span class="youtube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </span>
+                        <span class="pinterest">
+                            <i class="fa-brands fa-pinterest-p"></i>
+                        </span>
+                        <span class="instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="information">
+                    <p class="title-footer">Información</p>
+                    <ul>
+                        <li><a href="#">Acerca de Nosotros</a></li>
+                        <li><a href="#">Información Delivery</a></li>
+                        <li><a href="#">Politicas de Privacidad</a></li>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Contactános</a></li>
+                    </ul>
+                </div>
+
+                <div class="my-account">
+                    <p class="title-footer">Mi cuenta</p>
+
+                    <ul>
+                        <li><a href="#">Mi cuenta</a></li>
+                        <li><a href="#">Historial de ordenes</a></li>
+                        <li><a href="#">Lista de deseos</a></li>
+                        <li><a href="#">Boletín</a></li>
+                        <li><a href="#">Reembolsos</a></li>
+                    </ul>
+                </div>
+
+              
+            </div>
+
+            <div class="copyright">
+                <p>
+                    Desarrollado por VIIAT
+                </p>
+
+                <img src="img/payment.png" alt="Pagos">
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/81581fb069.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  var map = L.map('map').setView([19.2826, -99.6557], 13); // Ubicación de ejemplo (Querétaro)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  L.marker([19.2826, -99.6557]).addTo(map)
+    .bindPopup('Toluca, México')
+    .openPopup();
+</script>
+</body>
+
+</html>

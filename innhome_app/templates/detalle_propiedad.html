@@ -1,0 +1,264 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de {{ propiedad.nombre }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles/detalle_propiedad.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  
+    <div class="container-navbar">
+        <nav class="navbar container">
+            <div class="container-logo">
+                <a href="{% url 'home' %}">
+                    <img src="/media/imagenes/logito.png" alt="Logo de la Empresa" class="logo">
+                </a>                    
+            </div>
+            <i class="fa-solid fa-bars"></i>
+            <ul class="menu">
+                <li><a href="{% url 'home' %}">Inicio</a></li>
+                <li><a href="{% url 'sobre_nosotros' %}">Sobre Nosotros</a></li>
+                <li><a href="{% url 'listar_propiedades' %}">Propiedades</a></li>
+                <li><a href="{% url 'contactar' %}">Contacto</a></li>
+                <a href="{% url 'ver_favoritos' %}" class="nav-link">
+                    <i class="fas fa-heart"></i> 
+                    <span class="badge badge-pill badge-danger">{{ favoritos_count }}</span>
+                </a>
+                <div class="menu-container">
+                    <div class="menu-content">
+                       {% if user.is_authenticated %}
+                       <a href="{% url 'logout' %}" class="logout-link">
+                           <i class="fas fa-sign-out-alt"></i>
+                       </a>
+                       {% else %}
+                           <a href="{% url 'login' %}">Iniciar sesión</a>
+                           <a href="{% url 'registro' %}">Registrarse</a>
+                       {% endif %}
+                   </div>
+               </div>
+            </ul>
+        </nav>
+    </div>
+</head>
+<section>
+    {% include "chat.html" %}
+
+ </section>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">{{ propiedad.nombre }}</h1>
+
+        <div class="row">
+            <!-- Sección de Imágenes y Información de la Propiedad -->
+            <div class="col-md-8">
+                {% if propiedad.imagenes.all|length > 1 %}
+                    <!-- Carrusel de imágenes -->
+                    <div id="carouselDetalle" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for imagen in propiedad.imagenes.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ imagen.imagen.url }}" class="d-block w-100 propiedad-imagen" alt="Imagen de {{ propiedad.nombre }}">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselDetalle" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselDetalle" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Siguiente</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <!-- Mostrar una sola imagen -->
+                    {% for imagen in propiedad.imagenes.all %}
+                        <img src="{{ imagen.imagen.url }}" class="img-fluid propiedad-imagen" alt="Imagen de {{ propiedad.nombre }}">
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Información de la Propiedad -->
+            <div class="col-md-4 propiedad-info">
+                <h2>Detalles de la Propiedad</h4>
+                <p><strong>Dirección:</strong> {{ propiedad.direccion }}</p>
+                <p><strong>Precio:</strong> ${{ propiedad.precio }}</p>
+                <p><strong>Habitaciones:</strong> {{ propiedad.num_habitaciones }}</p>
+                <p><strong>Baños:</strong> {{ propiedad.num_banos }}</p>
+                <p><strong>Metros Cuadrados:</strong> {{ propiedad.metros_cuadrados }} m²</p>
+                <p><strong>Descripción:</strong> {{ propiedad.descripcion }}</p>
+            </div>
+        </div>
+
+        <!-- Sección de Comentarios y Calificaciones -->
+        <div class="container mt-5">
+            <h2>Comentarios y Calificaciones</h2>
+
+            <!-- Mostrar promedio de calificaciones -->
+            <p>Promedio de calificación: {{ promedio_calificacion|floatformat:1 }} / 5</p>
+
+            <!-- Mostrar comentarios existentes -->
+            <div class="comentarios mt-4">
+                {% for comentario in comentarios %}
+                    <div class="comentario mb-3">
+                        <p><strong>{{ comentario.usuario.username }}</strong> - {{ comentario.fecha|date:"d M Y" }}</p>
+                        <p>{{ comentario.comentario }}</p>
+                        <p>Calificación: {{ comentario.calificacion }} / 5</p>
+                    </div>
+                    <hr>
+                {% empty %}
+                    <p>No hay comentarios aún. Sé el primero en comentar.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Formulario para dejar un comentario -->
+            <h3>Deja tu comentario</h3>
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+
+        <!-- Contacto y Agendar Cita -->
+        <div class="container1">
+            <div class="contact-section">
+                <h2>¡Estamos aquí para ayudarte!</h2>
+                <h2>Te gustaría algún asesoramiento más personalizado?</h2>
+                <p>Escríbenos para obtener más información sobre nuestras propiedades.</p>
+                <div class="contact-buttons">
+                    <a href="{% url 'contactar' %}">📞 Contactar Asesor</a>
+                    <a href="{% url 'crear_cita' propiedad.id %}">📝 Agenda una cita</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="recomendaciones">
+            <h2>Propiedades Similares</h2>
+            <div class="row">
+                {% if propiedades_similares %}
+                    {% for similar in propiedades_similares %}
+                        <div class="col-md-4">
+                            <div class="card mb-4">
+                                <img src="{{ similar.imagenes.first.imagen.url }}" class="card-img-top" alt="Imagen de {{ similar.nombre }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ similar.nombre }}</h5>
+                                    <p class="card-text">Precio: ${{ similar.precio }}</p>
+                                    <a href="{% url 'detalle_propiedad' similar.id %}" class="btn btn-primary">Ver Detalles</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay propiedades similares disponibles en este rango de precios.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/81581fb069.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
+<style>
+ /* Estilo general para la sección */
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Títulos */
+.container h2, 
+.container h3 {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Promedio de calificaciones */
+.container p {
+    font-size: 14px;
+    color: #555;
+}
+
+.comentarios .comentario {
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background: #f9f9f9;
+}
+
+.comentarios .comentario strong {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.comentarios .comentario p {
+    margin: 5px 0;
+    color: #444;
+    font-size: 14px;
+}
+
+/* Calificaciones con estrellas */
+.comentarios .comentario .calificacion-estrellas {
+    color: #f39c12;
+    font-size: 16px;
+}
+
+hr {
+    border-top: 1px solid #e0e0e0;
+    margin: 10px 0;
+}
+
+/* Estilo del formulario */
+form {
+    margin-top: 20px;
+}
+
+form .form-control {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 14px;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
+
+form .btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+}
+
+</style>
+</html>

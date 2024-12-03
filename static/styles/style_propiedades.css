@@ -1,0 +1,12 @@
+.propiedad-item {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.propiedad-imagenes img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}

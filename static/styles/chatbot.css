@@ -1,0 +1,75 @@
+/* Estilo para la burbuja del chatbot */
+#chatbot-bubble {
+    background-color: #007bff;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#chatbot-bubble:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo del contenedor del chatbot */
+#chatbot-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo del encabezado del chatbot */
+#chatbot-header {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+}
+
+/* Estilo del botón de cerrar */
+#chatbot-close {
+    float: right;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+/* Estilo de los mensajes del chatbot */
+#chatbot-messages {
+    background-color: #f9f9f9;
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* Estilo del formulario del chatbot */
+#chatbot-form {
+    display: flex;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ccc;
+}
+
+#chatbot-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#chatbot-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#chatbot-form button:hover {
+    background-color: #0056b3;
+}

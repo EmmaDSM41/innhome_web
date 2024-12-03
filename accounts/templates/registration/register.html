@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="{% static 'styles/register.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Sección de Imagen -->
+        <div class="image-section">
+            <img class="login-image" src="/media/imagenes/casa3.jpg" alt="Imagen decorativa">
+        </div>
+
+        <!-- Sección de Formulario -->
+        <div class="form-section">
+            <form method="post">
+                {% csrf_token %}
+                <h2>Registrarse</h2>
+
+                <!-- Alertas -->
+                {% if messages %}
+                <ul class="alert-list">
+                    {% for message in messages %}
+                    <li class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <!-- Campos del formulario -->
+                <div class="form-group">
+                    <label for="username">Nombre de usuario</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="alert alert-error">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="alert alert-error">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password1">Contraseña</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <div class="alert alert-error">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password2">Confirmar contraseña</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <div class="alert alert-error">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn">Registrarse</button>
+                <p class="link">¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Propiedades</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!--     <link rel="stylesheet" href="{% static 'styles/style_propiedades.css' %}">
+ -->    <link rel="stylesheet" href="{% static 'styles/principal.css' %}">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+        <!--  <div class="container-hero">
+             <div class="container hero">
+                 <div class="customer-support">
+                     <i class="fa-solid fa-headset"></i>
+                     <div class="content-customer-support">
+                         <span class="text">Soporte al cliente</span>
+                         <span class="number">123-456-7890</span>
+                     </div>
+                 </div>
+ 
+                 <div class="container-logo">
+                     <i class="fa-solid fa-mug-hot"></i>
+                     <h1 class="logo"><a href="/">InnHome</a></h1>
+                 </div>
+             </div> -->
+         </div>
+         </div>
+ 
+         <div class="container-navbar">
+            <nav class="navbar container">
+                <div class="container-logo">
+                    <a href="{% url 'home' %}">
+                        <img src="/media/imagenes/logito.png" alt="Logo de la Empresa" class="logo">
+                    </a>                    
+                </div>
+                <i class="fa-solid fa-bars"></i>
+                <ul class="menu">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li><a href="{% url 'sobre_nosotros' %}">Sobre Nosotros</a></li>
+                    <li><a href="{% url 'listar_propiedades' %}">Propiedades</a></li>
+                    <li><a href="{% url 'contactar' %}">Contacto</a></li>
+                    <a href="{% url 'ver_favoritos' %}" class="nav-link">
+                        <i class="fas fa-heart"></i> 
+                        <span class="badge badge-pill badge-danger">{{ favoritos_count }}</span>
+                    </a>
+                    <div class="menu-container">
+                        <div class="menu-content">
+                           {% if user.is_authenticated %}
+                           <a href="{% url 'logout' %}" class="logout-link">
+                               <i class="fas fa-sign-out-alt"></i>
+                           </a>
+                           {% else %}
+                               <a href="{% url 'login' %}">Iniciar sesión</a>
+                               <a href="{% url 'registro' %}">Registrarse</a>
+                           {% endif %}
+                       </div>
+                   </div>
+                </ul>
+            </nav>
+        </div>
+     </header>
+     <section>
+        {% include "chat.html" %}
+
+     </section>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-5">Propiedades Disponibles</h1>
+
+        {% if propiedades %}
+        <div class="row">
+            {% for propiedad in propiedades %} 
+                     <div class="property-card">
+                        <div class="image-container">
+                            {% if propiedad.imagenes.all|length > 1 %}
+                                <!-- Carrusel de imágenes -->
+                                <div id="carousel{{ forloop.counter }}" class="carousel slide" data-ride="carousel">
+                                    <div class="carousel-inner">
+                                        {% for imagen in propiedad.imagenes.all %}
+                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                <img src="{{ imagen.imagen.url }}" class="d-block w-100" alt="Imagen de {{ propiedad.nombre }}">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <a class="carousel-control-prev" href="#carousel{{ forloop.counter }}" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Anterior</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carousel{{ forloop.counter }}" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Siguiente</span>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <!-- Mostrar imagen única -->
+                                {% for imagen in propiedad.imagenes.all %}
+                                    <img src="{{ imagen.imagen.url }}" class="img-fluid" alt="Imagen de {{ propiedad.nombre }}">
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="property-info">
+                            <h2>{{ propiedad.nombre }}</h2>
+                            <div class="details">
+                                <div class="detail">
+                                    <i class="fa-solid fa-location-dot"></i> {{ propiedad.direccion }}
+                                </div>
+                                <div class="detail">
+                                    <i class="fa-solid fa-bed"></i> {{ propiedad.num_habitaciones }} Habitaciones
+                                </div>
+                                <div class="detail">
+                                    <i class="fa-solid fa-bath"></i> {{ propiedad.num_banos }} Baños
+                                </div>
+                                <button class="btn-favorito" data-id="{{ propiedad.id }}">
+                                    <i class="fas fa-heart {% if propiedad in favoritos %}active{% endif %}"></i>
+                                </button>
+                            </div>
+                            <p class="price">${{ propiedad.precio }}</p>
+                            <a href="{% url 'detalle_propiedad' propiedad.id %}" class="more-info-btn">
+                                <i class="fa-solid fa-info-circle"></i> Más información
+                            </a>
+                        </div>
+                 </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-center">No hay propiedades disponibles en este momento.</p>
+        {% endif %}
+        
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/81581fb069.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Manejar el clic en el botón de favoritos
+            $('.btn-favorito').on('click', function(e) {
+                e.preventDefault();
+                var propiedadId = $(this).data('id');
+                var $boton = $(this);
+                
+                $.ajax({
+                    url: '/agregar_favorito/' + propiedadId + '/',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.agregado) {
+                            // Cambiar el estilo del botón a "añadido a favoritos"
+                            $boton.find('i').css('color', 'red');
+                            alert("Propiedad añadida a favoritos");
+                        } else {
+                            // Cambiar el estilo del botón a "no está en favoritos"
+                            $boton.find('i').css('color', 'black');
+                            alert("Propiedad eliminada de favoritos");
+                        }
+                        
+                        // Actualizar el contador de favoritos en el encabezado
+                        $('#contador-favoritos').text(response.cantidad_favoritos);
+                    },
+                    error: function() {
+                        alert('Hubo un error al intentar agregar a favoritos.');
+                    }
+                });
+            });
+        });
+    </script>
+    
+
+
+</body>
+</html>
